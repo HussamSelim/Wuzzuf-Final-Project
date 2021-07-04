@@ -70,7 +70,7 @@ public class Methods {
 	}
 	public static String extractskills(String skills) {
             try {
-                return skills.split (",")[7];
+                return skills.split ("\"")[1];
             } catch (ArrayIndexOutOfBoundsException e) {
                 return "";}
         }
