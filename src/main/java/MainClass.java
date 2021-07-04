@@ -49,7 +49,6 @@ public class MainClass {
                 JavaRDD<String> WuzzufDataSet= context.textFile("F:\\Iti\\Foundation period\\Java & UML programming\\Wuzzuf_Jobs.csv");
                 //Transformation
                 JavaRDD<String> WuzzufDataSetUpdated= WuzzufDataSet.distinct();
-
                 //Transformation
                 JavaRDD<String> jobs= WuzzufDataSetUpdated
                         .map(Methods::extractjobs)
