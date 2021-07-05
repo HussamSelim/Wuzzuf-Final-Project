@@ -29,7 +29,7 @@ public class MainClass {
                 Methods obj = new Methods();
                 //Using SMILE to print summary for the data
                 System.out.println ("=======Data Summary=========");
-                DataFrame jobSM = obj.readCSV ("F:\\Iti\\Foundation period\\Java & UML programming\\Wuzzuf_Jobs.csv");
+                DataFrame jobSM = obj.readCSV ("src/main/resources/Wuzzuf_Jobs.csv");
                 System.in.read();
                 System.out.println ("=======Data Structure=========");
                 System.out.println (jobSM.structure ());
@@ -46,7 +46,12 @@ public class MainClass {
                 SparkConf conf = new SparkConf().setAppName("Jobs").setMaster("local[3]");
                 JavaSparkContext context= new JavaSparkContext(conf);
                 // LOAD DATASETS
-                JavaRDD<String> WuzzufDataSet= context.textFile("F:\\Iti\\Foundation period\\Java & UML programming\\Wuzzuf_Jobs.csv");
+                JavaRDD<String> WuzzufDataSet= context.textFile("src/main/resources/Wuzzuf_Jobs.csv");
+                
+                //Removing Nulls and Duplicates 
+                Methods sd= new Methods();
+                sd.processTrainData(jobSM);
+                 
                 //Transformation
                 JavaRDD<String> WuzzufDataSetUpdated= WuzzufDataSet.distinct();
                 //Transformation

@@ -108,4 +108,11 @@ public class Methods {
     		
     		new SwingWrapper(chart).displayChart();
             }
+        public static DataFrame processTrainData(DataFrame data){
+            DataFrame nonNullData= data.omitNullRows ();
+             System.out.println ("Number of non Null rows is: "+nonNullData.nrows ());
+             
+
+             return nonNullData;
+         }
 }
