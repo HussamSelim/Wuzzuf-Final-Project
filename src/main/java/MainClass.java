@@ -2,10 +2,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Level;
@@ -71,48 +74,24 @@ public class MainClass {
                 JavaRDD<String> skills= WuzzufDataSetUpdated
                         .map(Methods::extractskills)
                         .filter(StringUtils::isNotBlank);
-                //Counting Skills
-                JavaRDD<String> words = skills.flatMap (skill -> Arrays.asList (skill
-                        .toLowerCase ()
-                        .trim ()
-                        .split (",")).iterator ());
-                System.out.println(words.toString ());
-                // COUNTING
-                //                System.out.println(words.count());
-                Map<String, Long> wordCounts = words.countByValue ();
-                Map<String, Long> sortedSkills= wordCounts.entrySet().stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (oldValue, newValue)-> oldValue, LinkedHashMap::new));
+                Map<String, Long> sortedSkills = Methods.countSkills(skills);
                 // DISPLAY
                 System.out.println("Skill               : Frequancy of Skill    ");
-                sortedSkills.forEach((k, v) -> System.out.println(k +"  :  "+v));
+                Methods.printNValues(sortedSkills,10);
+//                sortedSkills.forEach((k, v) -> System.out.println(k +"  :  "+v));
+                System.out.println("Finished");
                 System.in.read();
                 //Counting Companies
-                Map<String,Long> companiesCount= company.countByValue();
-                Map<String, Long> sortedCompany= companiesCount.entrySet().stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (oldValue, newValue)-> oldValue, LinkedHashMap::new));
+                Map<String, Long> sortedCompany = Methods.countRows(company);
                 System.out.println("Company               : Frequancy of Company    ");
-                sortedCompany.forEach((k, v) -> System.out.println(k +"  :  "+v));
-                                System.in.read();
+                // Display top 10 Companies
+                Methods.printNValues(sortedCompany,10);
+                System.in.read();
                 // Plotting the Pie chart for the 5 most publishing companies on Wuzzuf
-
                 obj.pieChart(sortedCompany);
-                                System.in.read();
+                System.in.read();
                 //Counting Jobs
-                Map<String,Long> jobsCount= jobs.countByValue();
-                Map<String, Long> sortedJobs= jobsCount.entrySet().stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (oldValue, newValue)-> oldValue, LinkedHashMap::new));
+                Map<String, Long> sortedJobs= Methods.countRows(jobs);
                 ArrayList<String> jobKeys= new ArrayList<String>(sortedJobs.keySet());
                 ArrayList<Long> jobValues= new ArrayList<Long>(sortedJobs.values());
 
@@ -121,28 +100,26 @@ public class MainClass {
                 //Calling graphJobPopularity to plot the bar chart
                 obj.graphJobPopularity(first8JobKeys, first8JobValues);
                 System.in.read();
+                // Display top 10 Jobs
                 System.out.println("Job               : Frequancy of job    ");
-                sortedJobs.forEach((k, v) -> System.out.println(k +"  :  "+v));
+                Methods.printNValues(sortedJobs, 10);
+                System.in.read();
                 //jobValues.forEach(x->System.out.println(x));
 
 
 
                 // Counting Locations
-                //		Map<String,Long> locationCount= location.countByValue();
-                //		Map<String, Long> sortedLocation= locationCount.entrySet().stream()
-                //		.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                //		.collect(Collectors.toMap(
-                //				Map.Entry::getKey,
-                //				Map.Entry::getValue,
-                //				(oldValue, newValue)-> oldValue, LinkedHashMap::new));
-                //		ArrayList<String> locationKeys= new ArrayList<String>(sortedLocation.keySet());
-                //		ArrayList<Long> locationValues= new ArrayList<Long>(sortedLocation.values());
-                //		
-                //		ArrayList<String> first8LocationKeys= (ArrayList<String>) locationKeys.stream().limit(8).collect(Collectors.toList());
-                //		ArrayList<Long> first8LocationValues= (ArrayList<Long>) locationValues.stream().limit(8).collect(Collectors.toList());
-                //		
-                //		obj.graphPopularAreas(first8LocationKeys, first8LocationValues);
+                Map<String, Long> sortedLocation= Methods.countRows(location);
+                ArrayList<String> locationKeys= new ArrayList<String>(sortedLocation.keySet());
+                ArrayList<Long> locationValues= new ArrayList<Long>(sortedLocation.values());
 
+                ArrayList<String> first8LocationKeys= (ArrayList<String>) locationKeys.stream().limit(8).collect(Collectors.toList());
+                ArrayList<Long> first8LocationValues= (ArrayList<Long>) locationValues.stream().limit(8).collect(Collectors.toList());
+
+                obj.graphPopularAreas(first8LocationKeys, first8LocationValues);
+                System.in.read();
+                Methods.printNValues(sortedLocation, 10);
+                System.in.read();
 
 
 
