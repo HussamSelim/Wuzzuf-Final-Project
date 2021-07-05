@@ -26,8 +26,6 @@ public class MainClass {
             
             
             try {
-                
-                
                 // Creating dummy object to call functions from the Methods Class
                 Methods obj = new Methods();
                 //Using SMILE to print summary for the data
@@ -37,6 +35,7 @@ public class MainClass {
                 System.out.println ("=======Data Structure=========");
                 System.out.println (jobSM.structure ());
                 System.in.read();
+                // Enocoding YearsExp column
                 jobSM = jobSM.merge (IntVector.of ("YearsExpValues",
                         obj.encodeCategory (jobSM, "YearsExp")));
                 
@@ -51,11 +50,13 @@ public class MainClass {
                 // LOAD DATASETS
                 JavaRDD<String> WuzzufDataSet= context.textFile("src/main/resources/Wuzzuf_Jobs.csv");
                 
-                //Removing Nulls and Duplicates 
-                Methods sd= new Methods();
-                sd.processTrainData(jobSM);
+                //Removing Nulls 
+                DataFrame newJobSM = Methods.processData(jobSM);
+                System.out.println ("=======Cleaned Data==============");
+                System.out.println (jobSM);
+                System.in.read();
                  
-                //Transformation
+                //Transformation and removing duplicates
                 JavaRDD<String> WuzzufDataSetUpdated= WuzzufDataSet.distinct();
                 //Transformation
                 JavaRDD<String> jobs= WuzzufDataSetUpdated
@@ -79,7 +80,6 @@ public class MainClass {
                 System.out.println("Skill               : Frequancy of Skill    ");
                 Methods.printNValues(sortedSkills,10);
 //                sortedSkills.forEach((k, v) -> System.out.println(k +"  :  "+v));
-                System.out.println("Finished");
                 System.in.read();
                 //Counting Companies
                 Map<String, Long> sortedCompany = Methods.countRows(company);
